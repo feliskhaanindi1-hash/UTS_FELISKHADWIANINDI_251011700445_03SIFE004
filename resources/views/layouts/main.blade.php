@@ -146,15 +146,138 @@
                     </li>
                     <!-- Menu Status Lamaran -->
                     <li class="nav-item px-1">
-                        <a class="nav-link text-white-50 position-relative" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusLamaran">
-                            <i class="bi bi-journal-check me-1"></i> Status Lamaran
-                            @if(session()->has('user_applications') && count(session('user_applications')) > 0)
-                                <span class="position-absolute top-1 start-100 translate-middle p-1 bg-warning border border-light rounded-circle">
-                                    <span class="visually-hidden">New alerts</span>
-                                </span>
-                            @endif
-                        </a>
+                   <!-- Modal Status Lamaran Saya (Aman 100% Tanpa Fitur Update/CRUD) -->
+<div class="modal fade" id="modalStatusLamaran" tabindex="-1" aria-labelledby="modalStatusLamaranLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            
+            <!-- Modal Header -->
+            <div class="modal-header text-white" style="background-color: #d35400;">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="modalStatusLamaranLabel">
+                    <i class="bi bi-briefcase"></i> Status Lamaran Saya
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body p-4">
+                
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs mb-3 border-bottom" id="statusTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-semibold" style="color: #d35400; border-color: #d35400 #d35400 #fff;" id="proses-tab" data-bs-toggle="tab" data-bs-target="#proses" type="button" role="tab">
+                            Proses Seleksi ({{ session('user_applications') ? count(session('user_applications')) : 1 }})
+                        </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted" id="hasil-tab" data-bs-toggle="tab" data-bs-target="#hasil" type="button" role="tab">
+                            Hasil Seleksi (0)
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Filter Badges -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge rounded-pill text-white px-3 py-2" style="background-color: #d35400;">Semua</span>
+                    <span class="badge rounded-pill border text-secondary px-3 py-2 bg-light">Direview</span>
+                    <span class="badge rounded-pill border text-secondary px-3 py-2 bg-light">Terseleksi</span>
+                    <span class="badge rounded-pill border text-secondary px-3 py-2 bg-light">Diundang Wawancara</span>
+                    <span class="badge rounded-pill border text-secondary px-3 py-2 bg-light">Wawancara Terjadwal</span>
+                </div>
+
+                <div class="text-muted small mb-3">
+                    <i class="bi bi-info-circle text-warning me-1"></i> Lihat arti dari setiap status lamaranmu <a href="#" class="text-danger text-decoration-underline">disini</a>.
+                </div>
+
+                <!-- Content Tab -->
+                <div class="tab-content" id="statusTabContent">
+                    <div class="tab-pane fade show active" id="proses" role="tabpanel">
+                        
+                        @if(session()->has('user_applications') && count(session('user_applications')) > 0)
+                            @foreach(session('user_applications') as $app)
+                                <!-- Item Card Lamaran (Dinamis dari Session) -->
+                                <div class="card border rounded-3 p-3 mb-3 shadow-sm bg-white">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        
+                                        <!-- Left Side: Icon & Detail Info -->
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="bg-light p-2 rounded-3 border d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;">
+                                                <i class="bi bi-person-workspace fa-2x text-dark"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-1" style="color: #d35400;">{{ $app['job_title'] ?? 'Restaurant Manager' }}</h6>
+                                                <div class="text-muted small">
+                                                    <i class="bi bi-building me-1"></i> {{ $app['company'] ?? 'PT MIESTAR' }} 
+                                                    <span class="mx-1">|</span> 
+                                                    <i class="bi bi-person me-1"></i> Pelamar: <strong>{{ $app['nama_pelamar'] ?? 'Feliskha Dwi Anindi' }}</strong>
+                                                </div>
+                                                <div class="text-muted small mt-1">
+                                                    <i class="bi bi-clock me-1"></i> Dikirim: {{ $app['applied_at'] ?? '23 Oct 2026 12:03' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Side: Badge Status Statis (Tanpa Tombol Ubah) -->
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-2 fw-bold d-flex align-items-center gap-1">
+                                                <i class="bi bi-hourglass-split"></i> {{ $app['status'] ?? 'Direview' }}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <!-- Default Tampilan Statis -->
+                            <div class="card border rounded-3 p-3 mb-3 shadow-sm bg-white">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-light p-2 rounded-3 border d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;">
+                                            <i class="bi bi-person-workspace fs-3 text-dark"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-1" style="color: #d35400;">Restaurant Manager</h6>
+                                            <div class="text-muted small">
+                                                <i class="bi bi-building me-1"></i> PT MIESTAR 
+                                                <span class="mx-1">|</span> 
+                                                <i class="bi bi-person me-1"></i> Pelamar: <strong>Feliskha Dwi Anindi</strong>
+                                            </div>
+                                            <div class="text-muted small mt-1">
+                                                <i class="bi bi-clock me-1"></i> Dikirim: 23 Oct 2026 12:03
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Status Badge Statis Aman -->
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-2 fw-bold d-flex align-items-center gap-1">
+                                            <i class="bi bi-hourglass-split"></i> Direview
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+
+                    <div class="tab-pane fade" id="hasil" role="tabpanel">
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-folder2-open fs-1 mb-2 text-secondary"></i>
+                            <p class="mb-0">Belum ada hasil seleksi yang selesai.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn text-white fw-semibold px-4" style="background-color: #4a2311;" data-bs-dismiss="modal">Tutup</button>
+            </div>
+
+        </div>
+    </div>
+</div>
                     <li class="nav-item px-1">
                         <a class="nav-link text-white-50" href="#" data-bs-toggle="modal" data-bs-target="#modalTentang">
                             <i class="bi bi-building me-1"></i> Tentang MIESTAR
